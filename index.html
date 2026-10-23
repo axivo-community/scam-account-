@@ -18,12 +18,32 @@
         .glass-card:hover { transform: translateY(-4px); border-color: rgba(244, 114, 182, 0.4); }
         .glass-modal { background: rgba(18, 10, 31, 0.95); backdrop-filter: blur(15px); border: 1px solid rgba(244, 114, 182, 0.3); }
 
+        /* Animations */
         @keyframes soft-pulse {
             0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(52, 211, 153, 0.7); }
             70% { transform: scale(1); box-shadow: 0 0 0 8px rgba(52, 211, 153, 0); }
             100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(52, 211, 153, 0); }
         }
         .pulse-green { animation: soft-pulse 2s infinite; }
+
+        @keyframes spin-normal { 100% { transform: rotate(360deg); } }
+        @keyframes spin-reverse { 100% { transform: rotate(-360deg); } }
+        
+        /* Digital Animated Icon */
+        .digital-ring {
+            position: relative; width: 28px; height: 28px;
+            border: 2px solid transparent; border-top-color: #ec4899; border-bottom-color: #34d399;
+            border-radius: 50%; animation: spin-normal 2s linear infinite;
+        }
+        .digital-ring::before {
+            content: ''; position: absolute; top: 3px; left: 3px; right: 3px; bottom: 3px;
+            border: 2px solid transparent; border-left-color: #ec4899; border-right-color: #34d399;
+            border-radius: 50%; animation: spin-reverse 1.5s linear infinite;
+        }
+        .digital-ring::after {
+            content: ''; position: absolute; top: 9px; left: 9px; width: 6px; height: 6px;
+            background: #fff; border-radius: 50%; box-shadow: 0 0 10px #ec4899, 0 0 20px #34d399;
+        }
 
         .scroll-popup { opacity: 0; transform: translateY(30px); transition: all 0.6s ease-out; }
         .scroll-popup.show { opacity: 1; transform: translateY(0); }
@@ -39,7 +59,6 @@
 </head>
 <body class="min-h-screen text-slate-100 selection:bg-pink-500 selection:text-white relative">
 
-    <!-- Video Background dengan Overlay Transparan -->
     <div class="fixed inset-0 z-0 pointer-events-none overflow-hidden bg-[#08040d]">
         <video autoplay loop muted playsinline class="absolute top-0 left-0 w-full h-full object-cover opacity-80">
             <source src="https://files.catbox.moe/kq2a4q.mp4" type="video/mp4">
@@ -66,9 +85,12 @@
                     </p>
                 </div>
             </div>
-            <div class="glass-card rounded-2xl px-6 py-4 text-center md:text-right w-full md:w-auto">
-                <div id="realtime-clock" class="text-2xl sm:text-3xl font-bold font-mono tracking-wider text-white">00:00:00</div>
-                <div class="text-[10px] uppercase tracking-widest text-pink-300 mt-1 font-semibold">Waktu Indonesia Barat</div>
+            <div class="glass-card rounded-2xl px-6 py-4 text-center md:text-right w-full md:w-auto flex flex-col items-center md:items-end justify-center">
+                <div class="flex items-center gap-3 mb-1">
+                    <div class="digital-ring"></div>
+                    <div id="realtime-clock" class="text-2xl sm:text-3xl font-bold font-mono tracking-wider text-white">00:00:00</div>
+                </div>
+                <div class="text-[10px] uppercase tracking-widest text-pink-300 font-semibold">Waktu Indonesia Barat</div>
             </div>
         </header>
 
@@ -120,9 +142,9 @@
             
             <div class="flex flex-col items-center gap-4">
                 <div class="flex items-center justify-center gap-4">
-                    <a href="https://facebook.com" target="_blank" class="w-10 h-10 rounded-full glass-card flex items-center justify-center hover:bg-white/10 transition text-lg"><i class="fa-brands fa-facebook-f"></i></a>
-                    <a href="https://t.me/flyterr" target="_blank" class="w-10 h-10 rounded-full glass-card flex items-center justify-center hover:bg-white/10 transition text-lg"><i class="fa-brands fa-telegram"></i></a>
-                    <a href="https://instagram.com" target="_blank" class="w-10 h-10 rounded-full glass-card flex items-center justify-center hover:bg-white/10 transition text-lg"><i class="fa-brands fa-instagram"></i></a>
+                    <a id="link-fb" href="#" target="_blank" class="w-10 h-10 rounded-full glass-card flex items-center justify-center hover:bg-white/10 transition text-lg"><i class="fa-brands fa-facebook-f"></i></a>
+                    <a id="link-tg" href="#" target="_blank" class="w-10 h-10 rounded-full glass-card flex items-center justify-center hover:bg-white/10 transition text-lg"><i class="fa-brands fa-telegram"></i></a>
+                    <a id="link-ig" href="#" target="_blank" class="w-10 h-10 rounded-full glass-card flex items-center justify-center hover:bg-white/10 transition text-lg"><i class="fa-brands fa-instagram"></i></a>
                 </div>
                 
                 <button onclick="openAdminLogin()" class="w-8 h-8 rounded-full flex items-center justify-center text-slate-500 hover:text-pink-400 transition mt-2" title="Admin Panel">
@@ -160,12 +182,13 @@
     <div id="adminPanel" class="fixed inset-0 z-50 bg-[#0a0510] hidden flex flex-col h-screen overflow-hidden">
         <div class="bg-slate-900 border-b border-slate-800 p-4 flex justify-between items-center">
             <h2 class="text-lg sm:text-xl font-bold text-pink-400"><i class="fa-solid fa-gear"></i> Panel Kontrol Admin</h2>
-            <button onclick="closeAdminPanel()" class="bg-red-600/20 text-red-400 px-4 py-1.5 rounded-lg text-sm border border-red-500/30 hover:bg-red-600 hover:text-white transition font-medium">Tutup & Simpan</button>
+            <!-- TOMBOL TUTUP DAN SIMPAN DIPERBARUI -->
+            <button id="btnCloseAdmin" onclick="closeAdminPanel()" class="bg-red-600/20 text-red-400 px-4 py-1.5 rounded-lg text-sm border border-red-500/30 hover:bg-red-600 hover:text-white transition font-medium">Tutup & Simpan</button>
         </div>
         
         <div class="flex flex-1 overflow-hidden">
             <div class="w-1/3 sm:w-1/4 bg-slate-900/50 border-r border-slate-800 p-2 flex flex-col gap-1 overflow-y-auto">
-                <button onclick="switchTab('tab-profil')" class="tab-btn active text-left px-3 sm:px-4 py-3 rounded-lg text-xs sm:text-sm font-medium hover:bg-slate-800 text-slate-300">Profil & Bio</button>
+                <button onclick="switchTab('tab-profil')" class="tab-btn active text-left px-3 sm:px-4 py-3 rounded-lg text-xs sm:text-sm font-medium hover:bg-slate-800 text-slate-300">Profil, Bio & Link</button>
                 <button onclick="switchTab('tab-katalog')" class="tab-btn text-left px-3 sm:px-4 py-3 rounded-lg text-xs sm:text-sm font-medium hover:bg-slate-800 text-slate-300">Katalog Produk</button>
                 <button onclick="switchTab('tab-testimoni')" class="tab-btn text-left px-3 sm:px-4 py-3 rounded-lg text-xs sm:text-sm font-medium hover:bg-slate-800 text-slate-300">Testimoni</button>
                 <button onclick="switchTab('tab-blacklist')" class="tab-btn text-left px-3 sm:px-4 py-3 rounded-lg text-xs sm:text-sm font-medium hover:bg-slate-800 text-slate-300">Daftar Blacklist</button>
@@ -173,6 +196,8 @@
             </div>
 
             <div class="flex-1 p-4 sm:p-6 overflow-y-auto bg-black/20">
+                
+                <!-- TAB PROFIL (DITAMBAH SOSIAL MEDIA) -->
                 <div id="tab-profil" class="tab-content active space-y-4">
                     <h3 class="text-lg font-bold mb-4 text-white">Edit Profil Halaman</h3>
                     <div><label class="text-xs text-slate-400">Nama</label><input type="text" id="edit-name" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-pink-500 text-white"></div>
@@ -180,9 +205,16 @@
                     <div><label class="text-xs text-slate-400">Lokasi</label><input type="text" id="edit-loc" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-pink-500 text-white"></div>
                     <div><label class="text-xs text-slate-400">URL Foto Profil</label><input type="text" id="edit-photo" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-pink-500 text-white"></div>
                     <div><label class="text-xs text-slate-400">Deskripsi Bio (HTML diperbolehkan)</label><textarea id="edit-bio" rows="4" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-pink-500 text-white"></textarea></div>
-                    <button onclick="saveProfile()" class="bg-pink-600 hover:bg-pink-500 text-white px-5 py-2.5 rounded-lg text-sm mt-2 transition font-medium">Simpan Profil</button>
+                    
+                    <h4 class="text-sm font-bold text-white mt-8 mb-2 border-b border-slate-700 pb-2">Link Sosial Media</h4>
+                    <div><label class="text-xs text-slate-400">URL Facebook</label><input type="text" id="edit-fb" placeholder="https://facebook.com/..." class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-pink-500 text-white"></div>
+                    <div><label class="text-xs text-slate-400">URL Telegram</label><input type="text" id="edit-tg" placeholder="https://t.me/..." class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-pink-500 text-white"></div>
+                    <div><label class="text-xs text-slate-400">URL Instagram</label><input type="text" id="edit-ig" placeholder="https://instagram.com/..." class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-pink-500 text-white"></div>
+
+                    <button onclick="saveProfile(true)" class="bg-pink-600 hover:bg-pink-500 text-white px-5 py-2.5 rounded-lg text-sm mt-4 transition font-medium">Simpan Profil & Link</button>
                 </div>
 
+                <!-- TAB KATALOG -->
                 <div id="tab-katalog" class="tab-content">
                     <h3 class="text-lg font-bold mb-4 text-white">Manajemen Katalog</h3>
                     <div class="bg-slate-800/50 p-4 rounded-xl border border-slate-700 mb-6">
@@ -199,6 +231,7 @@
                     <div id="admin-catalog-list" class="space-y-3"></div>
                 </div>
 
+                <!-- TAB TESTIMONI -->
                 <div id="tab-testimoni" class="tab-content">
                     <h3 class="text-lg font-bold mb-4 text-white">Riwayat Testimoni Transaksi</h3>
                     <div class="bg-slate-800/50 p-4 rounded-xl border border-slate-700 mb-6">
@@ -211,10 +244,13 @@
                     <div id="admin-testi-list" class="space-y-2"></div>
                 </div>
 
+                <!-- TAB BLACKLIST (DITAMBAH FITUR MASSAL) -->
                 <div id="tab-blacklist" class="tab-content">
                     <h3 class="text-lg font-bold mb-4 text-white">Daftar Akun Bermasalah</h3>
+                    
+                    <!-- Form Input Satuan -->
                     <div class="bg-slate-800/50 p-4 rounded-xl border border-red-900/30 mb-6">
-                        <h4 class="text-sm font-bold text-red-400 mb-3">Tambah ke Blacklist</h4>
+                        <h4 class="text-sm font-bold text-red-400 mb-3">Tambah Satuan</h4>
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
                             <input type="text" id="add-bl-id" placeholder="Tagar akun/ID" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-red-500 col-span-1 sm:col-span-2 text-white">
                             <input type="text" id="add-bl-game" placeholder="Game" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-red-500 text-white">
@@ -223,7 +259,16 @@
                             <input type="text" id="add-bl-reason" placeholder="Keterangan" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-red-500 col-span-1 sm:col-span-2 text-white">
                         </div>
                         <button onclick="addBlacklist()" class="bg-red-600 hover:bg-red-500 text-white px-5 py-2.5 rounded-lg text-sm font-medium transition shadow-lg shadow-red-900/40">Blacklist Akun</button>
+                        
+                        <!-- Form Input Massal (Baru) -->
+                        <div class="mt-5 pt-4 border-t border-red-900/50">
+                            <h4 class="text-sm font-bold text-red-400 mb-1">Tambah Massal Cepat (Bulk Add)</h4>
+                            <p class="text-[11px] text-slate-400 mb-3">Masukkan banyak ID sekaligus (pisahkan dengan koma atau Enter). Info Game/Payment otomatis diisi "Ditambahkan Massal".</p>
+                            <textarea id="add-bl-bulk" rows="3" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-red-500 text-white" placeholder="ID1, ID2, ID3..."></textarea>
+                            <button onclick="addBlacklistBulk()" class="bg-red-800 hover:bg-red-700 text-white px-5 py-2 rounded-lg text-sm mt-2 font-medium transition">Tambahkan Semua</button>
+                        </div>
                     </div>
+
                     <div id="admin-bl-list" class="space-y-3"></div>
                 </div>
             </div>
@@ -232,17 +277,18 @@
 
     <!-- ================= JAVASCRIPT & DATABASE GITHUB ================= -->
     <script>
-        // --- 1. KONFIGURASI GITHUB GIST (Ubah Bagian Ini!) ---
+        // --- 1. KONFIGURASI GITHUB GIST ---
         const GITHUB_TOKEN = "ghp_" + "TLVp1cH5YdEm8s77mYQ8oN5ZSKMZu34gBKBJ"; 
         const GIST_ID = "47f43a4014b1b587506e0e12df2dd89d"; 
 
         const defaultDB = {
             profile: {
-                name: "Rifqy Sahda Pratama",
-                role: "Production Staff / Digital Creator",
-                location: "Indonesia • Ready to collaborate",
-                photo: "https://placehold.co/150x150/ec4899/ffffff?text=RSP",
+                name: "Rifqy Sahda Pratama", role: "Production Staff / Digital Creator",
+                location: "Indonesia • Ready to collaborate", photo: "https://placehold.co/150x150/ec4899/ffffff?text=RSP",
                 bio: "Halo! Saya <strong class='text-white'>Rifqy Sahda Pratama</strong>, seorang profesional di bidang produksi dan kreator digital. Selamat datang di katalog resmi saya!"
+            },
+            socials: {
+                facebook: "https://facebook.com", telegram: "https://t.me/flyterr", instagram: "https://instagram.com"
             },
             catalog: [
                 { id: 1, name: "CapCut Pro Akun Resmi", badge: "PRO", price: "Rp 25.000", img: "https://placehold.co/400x250/ec4899/ffffff?text=CapCut+Pro", desc: "Akun premium unblock semua efek pro, bebas watermark." },
@@ -266,6 +312,8 @@
                 
                 if (data.files['db.json'] && data.files['db.json'].content !== "{}") {
                     db = JSON.parse(data.files['db.json'].content);
+                    // Menambahkan kompatibilitas untuk DB lama yg belum ada "socials"
+                    if (!db.socials) db.socials = defaultDB.socials; 
                 } else {
                     db = JSON.parse(JSON.stringify(defaultDB));
                     await saveDB(); 
@@ -282,30 +330,19 @@
             try {
                 await fetch(`https://api.github.com/gists/${GIST_ID}`, {
                     method: 'PATCH',
-                    headers: {
-                        'Accept': 'application/vnd.github.v3+json',
-                        'Authorization': `Bearer ${GITHUB_TOKEN}`,
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        files: {
-                            'db.json': {
-                                content: JSON.stringify(db, null, 2)
-                            }
-                        }
-                    })
+                    headers: { 'Accept': 'application/vnd.github.v3+json', 'Authorization': `Bearer ${GITHUB_TOKEN}`, 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ files: { 'db.json': { content: JSON.stringify(db, null, 2) } } })
                 });
             } catch (error) {
                 console.error("Gagal menyinkronkan dengan GitHub:", error);
-                alert("Terjadi kesalahan jaringan. Data gagal disimpan ke server.");
+                alert("Terjadi kesalahan jaringan saat menyimpan data ke server.");
             }
         }
 
         async function resetData() { 
             if(confirm('Yakin ingin mereset ke data awal? Semua perubahan di server publik akan hilang.')){
                 db = JSON.parse(JSON.stringify(defaultDB)); 
-                await saveDB(); 
-                location.reload();
+                await saveDB(); location.reload();
             }
         }
 
@@ -318,6 +355,11 @@
             document.getElementById('view-loc-text').textContent = db.profile.location;
             document.getElementById('view-bio').innerHTML = db.profile.bio;
             document.getElementById('view-photo').src = db.profile.photo;
+
+            // Update Link Sosial Media
+            document.getElementById('link-fb').href = db.socials.facebook;
+            document.getElementById('link-tg').href = db.socials.telegram;
+            document.getElementById('link-ig').href = db.socials.instagram;
 
             const catContainer = document.getElementById('view-catalog');
             catContainer.innerHTML = '';
@@ -406,7 +448,30 @@
                 loadAdminData();
             } else { alert('Password Salah!'); }
         }
-        function closeAdminPanel() { document.getElementById('adminPanel').classList.add('hidden'); renderUserView(); }
+        
+        // PERBAIKAN FITUR TUTUP PANEL SEKALIGUS AUTO-SAVE PROFIL
+        async function closeAdminPanel() { 
+            const btn = document.getElementById('btnCloseAdmin');
+            const originalText = btn.innerText;
+            btn.innerText = "Menyimpan...";
+
+            // Memastikan data profil terbaru yang sedang diketik masuk ke DB sebelum ditutup
+            db.profile.name = document.getElementById('edit-name').value;
+            db.profile.role = document.getElementById('edit-role').value;
+            db.profile.location = document.getElementById('edit-loc').value;
+            db.profile.photo = document.getElementById('edit-photo').value;
+            db.profile.bio = document.getElementById('edit-bio').value;
+            
+            db.socials.facebook = document.getElementById('edit-fb').value;
+            db.socials.telegram = document.getElementById('edit-tg').value;
+            db.socials.instagram = document.getElementById('edit-ig').value;
+
+            await saveDB(); // Simpan otomatis ke server
+
+            btn.innerText = originalText;
+            document.getElementById('adminPanel').classList.add('hidden'); 
+            renderUserView(); // Merender ulang tampilan halaman depan
+        }
 
         function switchTab(tabId) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
@@ -422,6 +487,10 @@
             document.getElementById('edit-loc').value = db.profile.location;
             document.getElementById('edit-photo').value = db.profile.photo;
             document.getElementById('edit-bio').value = db.profile.bio;
+            
+            document.getElementById('edit-fb').value = db.socials.facebook;
+            document.getElementById('edit-tg').value = db.socials.telegram;
+            document.getElementById('edit-ig').value = db.socials.instagram;
 
             const catList = document.getElementById('admin-catalog-list');
             catList.innerHTML = '';
@@ -443,25 +512,29 @@
         }
 
         // --- ADMIN ASYNC ACTIONS ---
-        async function saveProfile() {
+        async function saveProfile(showAlert = false) {
             db.profile.name = document.getElementById('edit-name').value;
             db.profile.role = document.getElementById('edit-role').value;
             db.profile.location = document.getElementById('edit-loc').value;
             db.profile.photo = document.getElementById('edit-photo').value;
             db.profile.bio = document.getElementById('edit-bio').value;
-            const btn = event.target; btn.innerText = "Menyimpan...";
+            
+            db.socials.facebook = document.getElementById('edit-fb').value;
+            db.socials.telegram = document.getElementById('edit-tg').value;
+            db.socials.instagram = document.getElementById('edit-ig').value;
+
+            const btn = event.target; 
+            if(btn) btn.innerText = "Menyimpan...";
             await saveDB(); 
-            btn.innerText = "Simpan Profil";
-            alert('Profil global berhasil diperbarui!');
+            if(btn) btn.innerText = "Simpan Profil & Link";
+            if(showAlert) alert('Profil & Link Sosial Media berhasil diperbarui!');
         }
 
         async function addCatalog() {
             db.catalog.push({
                 id: Date.now(),
-                name: document.getElementById('add-cat-name').value,
-                badge: document.getElementById('add-cat-badge').value,
-                price: document.getElementById('add-cat-price').value,
-                img: document.getElementById('add-cat-img').value,
+                name: document.getElementById('add-cat-name').value, badge: document.getElementById('add-cat-badge').value,
+                price: document.getElementById('add-cat-price').value, img: document.getElementById('add-cat-img').value,
                 desc: document.getElementById('add-cat-desc').value
             });
             const btn = event.target; btn.innerText = "Menyimpan...";
@@ -473,10 +546,8 @@
 
         async function addTestimoni() {
             db.testimonials.push({
-                id: Date.now(),
-                user: document.getElementById('add-testi-name').value,
-                item: document.getElementById('add-testi-item').value,
-                text: document.getElementById('add-testi-desc').value
+                id: Date.now(), user: document.getElementById('add-testi-name').value,
+                item: document.getElementById('add-testi-item').value, text: document.getElementById('add-testi-desc').value
             });
             const btn = event.target; btn.innerText = "Menyimpan...";
             await saveDB(); loadAdminData();
@@ -490,18 +561,34 @@
             if(!idInput) { alert("Tagar akun/ID wajib diisi!"); return; }
 
             db.blacklist.push({
-                id: idInput,
-                game: document.getElementById('add-bl-game').value || "-",
-                phone: document.getElementById('add-bl-phone').value || "-",
-                payment: document.getElementById('add-bl-payment').value || "-",
-                reason: document.getElementById('add-bl-reason').value || "-"
+                id: idInput, game: document.getElementById('add-bl-game').value || "-", phone: document.getElementById('add-bl-phone').value || "-",
+                payment: document.getElementById('add-bl-payment').value || "-", reason: document.getElementById('add-bl-reason').value || "-"
             });
             
             const btn = event.target; btn.innerText = "Menyimpan...";
             await saveDB(); loadAdminData();
             btn.innerText = "Blacklist Akun";
-            document.querySelectorAll('#tab-blacklist input').forEach(inpt => inpt.value = '');
+            document.querySelectorAll('#tab-blacklist input:not(#add-bl-bulk)').forEach(inpt => inpt.value = '');
         }
+        
+        // FITUR TAMBAH BLACKLIST MASSAL (BULK)
+        async function addBlacklistBulk() {
+            const rawText = document.getElementById('add-bl-bulk').value;
+            if(!rawText.trim()) return;
+
+            const ids = rawText.split(/[\n,]+/).map(id => id.trim()).filter(id => id);
+            ids.forEach(id => {
+                db.blacklist.push({
+                    id: id, game: "Ditambahkan Massal", phone: "-", payment: "-", reason: "Blacklist Massal"
+                });
+            });
+
+            const btn = event.target; btn.innerText = "Menyimpan...";
+            await saveDB(); loadAdminData();
+            btn.innerText = "Tambahkan Semua";
+            document.getElementById('add-bl-bulk').value = '';
+        }
+
         async function delBL(idx) { db.blacklist.splice(idx, 1); await saveDB(); loadAdminData(); }
 
         // --- INISIALISASI ---
