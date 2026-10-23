@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portofolio - Rifqy Sahda Pratama</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        html { background-color: #08040d; overscroll-behavior-y: none; }
+        body { font-family: 'Inter', sans-serif; background-color: transparent; color: #f3f4f6; overflow-x: hidden; }
+
+        /* Glassmorphism */
+        .glass-panel { background: rgba(20, 10, 30, 0.4); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); border: 1px solid rgba(255, 182, 215, 0.1); box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3); }
+        .glass-card { background: rgba(20, 10, 30, 0.3); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); border: 1px solid rgba(255, 182, 215, 0.08); transition: all 0.3s ease; }
+        .glass-card:hover { transform: translateY(-4px); border-color: rgba(244, 114, 182, 0.4); }
+        .glass-modal { background: rgba(18, 10, 31, 0.95); backdrop-filter: blur(15px); border: 1px solid rgba(244, 114, 182, 0.3); }
+
+        @keyframes soft-pulse {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(52, 211, 153, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 8px rgba(52, 211, 153, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(52, 211, 153, 0); }
+        }
+        .pulse-green { animation: soft-pulse 2s infinite; }
+
+        .scroll-popup { opacity: 0; transform: translateY(30px); transition: all 0.6s ease-out; }
+        .scroll-popup.show { opacity: 1; transform: translateY(0); }
+
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #0a0510; }
+        ::-webkit-scrollbar-thumb { background: rgba(244, 114, 182, 0.3); border-radius: 4px; }
+
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        .tab-btn.active { border-bottom: 2px solid #ec4899; color: #ec4899; }
+    </style>
+</head>
+<body class="min-h-screen text-slate-100 selection:bg-pink-500 selection:text-white relative">
+
+    <!-- Video Background dengan Overlay Transparan -->
+    <div class="fixed inset-0 z-0 pointer-events-none overflow-hidden bg-[#08040d]">
+        <video autoplay loop muted playsinline class="absolute top-0 left-0 w-full h-full object-cover opacity-80">
+            <source src="https://files.catbox.moe/kq2a4q.mp4" type="video/mp4">
+        </video>
+        <div class="absolute inset-0 bg-gradient-to-b from-[#0a0510]/60 via-[#0a0510]/30 to-[#0a0510]/80"></div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="relative z-20 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12" id="main-content">
+        <!-- HEADER / PROFIL -->
+        <header class="glass-panel scroll-popup rounded-3xl p-6 sm:p-8 mb-8 flex flex-col md:flex-row items-center justify-between gap-6">
+            <div class="flex flex-col sm:flex-row items-center gap-6 text-center sm:text-left">
+                <div class="relative">
+                    <img id="view-photo" src="" alt="Foto Profil" class="w-28 h-28 sm:w-32 sm:h-32 rounded-full object-cover border-2 border-pink-400/50 shadow-lg">
+                    <div class="absolute bottom-1 right-1 bg-slate-900/90 px-2 py-1 rounded-full border border-pink-500/30 flex items-center gap-1 shadow-md">
+                        <span class="w-2.5 h-2.5 bg-emerald-400 rounded-full pulse-green inline-block"></span>
+                    </div>
+                </div>
+                <div>
+                    <h1 id="view-name" class="text-2xl sm:text-3xl font-bold tracking-tight text-white mb-1">Nama</h1>
+                    <p id="view-role" class="text-pink-300 font-medium text-sm sm:text-base">Role</p>
+                    <p id="view-location" class="text-slate-300 text-xs sm:text-sm mt-1 flex items-center justify-center sm:justify-start gap-1">
+                        <i class="fa-solid fa-location-dot text-rose-400"></i> <span id="view-loc-text">Lokasi</span>
+                    </p>
+                </div>
+            </div>
+            <div class="glass-card rounded-2xl px-6 py-4 text-center md:text-right w-full md:w-auto">
+                <div id="realtime-clock" class="text-2xl sm:text-3xl font-bold font-mono tracking-wider text-white">00:00:00</div>
+                <div class="text-[10px] uppercase tracking-widest text-pink-300 mt-1 font-semibold">Waktu Indonesia Barat</div>
+            </div>
+        </header>
+
+        <!-- TENTANG SAYA -->
+        <section class="glass-panel scroll-popup rounded-3xl p-6 sm:p-8 mb-8">
+            <h2 class="text-xl font-bold text-white mb-3 flex items-center gap-2">
+                <i class="fa-solid fa-heart text-pink-400"></i> Tentang Saya
+            </h2>
+            <p id="view-bio" class="text-slate-200 text-sm sm:text-base leading-relaxed">Bio text...</p>
+        </section>
+
+        <!-- PENCARIAN AKUN BERMASALAH (BLACKLIST) -->
+        <section class="glass-panel scroll-popup rounded-3xl p-6 sm:p-8 mb-8 border border-red-500/30 relative overflow-hidden">
+            <div class="absolute -top-20 -right-20 w-64 h-64 bg-red-600/10 rounded-full blur-3xl pointer-events-none"></div>
+            
+            <h2 class="text-xl font-bold text-red-400 mb-2 flex items-center gap-2 relative z-10">
+                <i class="fa-solid fa-triangle-exclamation"></i> Cek Akun Bermasalah (Blacklist)
+            </h2>
+            <p class="text-slate-300 text-xs mb-4 relative z-10">Pastikan Anda tidak bertransaksi dengan ID Game / No HP penipu. Cek tagar/ID persis di sini:</p>
+            <div class="flex gap-2 relative z-10">
+                <input type="text" id="searchInput" placeholder="Ketik persis Tagar/ID/No pencarian..." class="w-full bg-black/50 border border-slate-600 rounded-xl px-4 py-2 text-sm text-white focus:outline-none focus:border-red-400">
+                <button onclick="searchBlacklist()" class="bg-red-600 hover:bg-red-500 text-white px-5 py-2 rounded-xl text-sm font-medium transition cursor-pointer shadow-lg shadow-red-900/50">Cari</button>
+            </div>
+            <div id="searchResult" class="mt-4 text-sm hidden relative z-10 transition-all duration-300"></div>
+        </section>
+
+        <!-- KATALOG PRODUK -->
+        <div class="flex justify-between items-center mb-6 scroll-popup">
+            <h2 class="text-2xl font-bold text-white flex items-center gap-2">
+                <i class="fa-solid fa-boxes-stacked text-pink-400"></i> Katalog Produk
+            </h2>
+        </div>
+        <section id="view-catalog" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-12 scroll-popup"></section>
+
+        <!-- TESTIMONI TRANSAKSI -->
+        <div class="flex justify-between items-center mb-6 scroll-popup">
+            <h2 class="text-2xl font-bold text-white flex items-center gap-2">
+                <i class="fa-solid fa-receipt text-emerald-400"></i> Testimoni Transaksi
+            </h2>
+        </div>
+        <section id="view-testimonials" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-16 scroll-popup"></section>
+
+        <!-- FOOTER -->
+        <footer class="glass-panel scroll-popup rounded-3xl p-8 text-center flex flex-col items-center justify-center gap-6">
+            <div class="text-sm">
+                <p class="font-medium text-white">© 2026 Rifqy Sahda Pratama.</p>
+                <p class="text-pink-300/80 mt-1">All rights reserved.</p>
+            </div>
+            
+            <div class="flex flex-col items-center gap-4">
+                <div class="flex items-center justify-center gap-4">
+                    <a href="https://facebook.com" target="_blank" class="w-10 h-10 rounded-full glass-card flex items-center justify-center hover:bg-white/10 transition text-lg"><i class="fa-brands fa-facebook-f"></i></a>
+                    <a href="https://t.me/flyterr" target="_blank" class="w-10 h-10 rounded-full glass-card flex items-center justify-center hover:bg-white/10 transition text-lg"><i class="fa-brands fa-telegram"></i></a>
+                    <a href="https://instagram.com" target="_blank" class="w-10 h-10 rounded-full glass-card flex items-center justify-center hover:bg-white/10 transition text-lg"><i class="fa-brands fa-instagram"></i></a>
+                </div>
+                
+                <button onclick="openAdminLogin()" class="w-8 h-8 rounded-full flex items-center justify-center text-slate-500 hover:text-pink-400 transition mt-2" title="Admin Panel">
+                    <i class="fa-solid fa-lock text-[10px]"></i>
+                </button>
+            </div>
+        </footer>
+    </main>
+
+    <!-- MODALS -->
+    <div id="qrisModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm hidden">
+        <div class="glass-modal rounded-3xl max-w-md w-full p-6 text-center border border-pink-500/30">
+            <h3 id="modalItemName" class="text-lg font-bold text-white">Produk</h3>
+            <p id="modalItemPrice" class="text-pink-300 font-bold mb-4">Rp 0</p>
+            <img src="https://placehold.co/220x220/1e293b/ffffff?text=SCAN+QRIS" class="w-48 h-48 mx-auto rounded-lg mb-4 border border-slate-700">
+            <div class="flex gap-3">
+                <button onclick="closeModal('qrisModal')" class="flex-1 bg-slate-800 text-white py-2.5 rounded-xl text-sm font-medium hover:bg-slate-700 transition">Batal</button>
+                <button onclick="confirmPayment()" class="flex-1 bg-green-600 text-white py-2.5 rounded-xl text-sm font-medium shadow-lg shadow-green-900/40 hover:bg-green-500 transition">Konfirmasi WA</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="loginModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 backdrop-blur-md hidden">
+        <div class="bg-slate-900 border border-slate-700 rounded-3xl p-6 w-full max-w-sm text-center shadow-[0_0_20px_rgba(236,72,153,0.1)]">
+            <h3 class="text-xl font-bold text-white mb-2"><i class="fa-solid fa-shield-halved text-pink-500"></i> Admin Access</h3>
+            <p class="text-xs text-slate-400 mb-5">Silakan login untuk mengelola halaman ini.</p>
+            <input type="password" id="adminPassword" placeholder="Masukkan Password" class="w-full bg-black/50 border border-slate-600 rounded-xl px-4 py-3 mb-5 text-white text-center tracking-widest focus:outline-none focus:border-pink-500">
+            <div class="flex gap-2">
+                <button onclick="closeModal('loginModal')" class="flex-1 bg-slate-800 hover:bg-slate-700 text-white py-2.5 rounded-xl text-sm transition font-medium">Batal</button>
+                <button onclick="loginAdmin()" class="flex-1 bg-pink-600 hover:bg-pink-500 text-white py-2.5 rounded-xl text-sm shadow-lg shadow-pink-900/40 transition font-medium">Login</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="adminPanel" class="fixed inset-0 z-50 bg-[#0a0510] hidden flex flex-col h-screen overflow-hidden">
+        <div class="bg-slate-900 border-b border-slate-800 p-4 flex justify-between items-center">
+            <h2 class="text-lg sm:text-xl font-bold text-pink-400"><i class="fa-solid fa-gear"></i> Panel Kontrol Admin</h2>
+            <button onclick="closeAdminPanel()" class="bg-red-600/20 text-red-400 px-4 py-1.5 rounded-lg text-sm border border-red-500/30 hover:bg-red-600 hover:text-white transition font-medium">Tutup & Simpan</button>
+        </div>
+        
+        <div class="flex flex-1 overflow-hidden">
+            <div class="w-1/3 sm:w-1/4 bg-slate-900/50 border-r border-slate-800 p-2 flex flex-col gap-1 overflow-y-auto">
+                <button onclick="switchTab('tab-profil')" class="tab-btn active text-left px-3 sm:px-4 py-3 rounded-lg text-xs sm:text-sm font-medium hover:bg-slate-800 text-slate-300">Profil & Bio</button>
+                <button onclick="switchTab('tab-katalog')" class="tab-btn text-left px-3 sm:px-4 py-3 rounded-lg text-xs sm:text-sm font-medium hover:bg-slate-800 text-slate-300">Katalog Produk</button>
+                <button onclick="switchTab('tab-testimoni')" class="tab-btn text-left px-3 sm:px-4 py-3 rounded-lg text-xs sm:text-sm font-medium hover:bg-slate-800 text-slate-300">Testimoni</button>
+                <button onclick="switchTab('tab-blacklist')" class="tab-btn text-left px-3 sm:px-4 py-3 rounded-lg text-xs sm:text-sm font-medium hover:bg-slate-800 text-slate-300">Daftar Blacklist</button>
+                <button onclick="resetData()" class="mt-auto text-left px-3 sm:px-4 py-3 rounded-lg text-xs font-medium text-red-500 hover:bg-red-900/20 transition"><i class="fa-solid fa-rotate-right mr-1"></i> Reset Data</button>
+            </div>
+
+            <div class="flex-1 p-4 sm:p-6 overflow-y-auto bg-black/20">
+                <div id="tab-profil" class="tab-content active space-y-4">
+                    <h3 class="text-lg font-bold mb-4 text-white">Edit Profil Halaman</h3>
+                    <div><label class="text-xs text-slate-400">Nama</label><input type="text" id="edit-name" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-pink-500 text-white"></div>
+                    <div><label class="text-xs text-slate-400">Role / Jabatan</label><input type="text" id="edit-role" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-pink-500 text-white"></div>
+                    <div><label class="text-xs text-slate-400">Lokasi</label><input type="text" id="edit-loc" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-pink-500 text-white"></div>
+                    <div><label class="text-xs text-slate-400">URL Foto Profil</label><input type="text" id="edit-photo" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-pink-500 text-white"></div>
+                    <div><label class="text-xs text-slate-400">Deskripsi Bio (HTML diperbolehkan)</label><textarea id="edit-bio" rows="4" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-pink-500 text-white"></textarea></div>
+                    <button onclick="saveProfile()" class="bg-pink-600 hover:bg-pink-500 text-white px-5 py-2.5 rounded-lg text-sm mt-2 transition font-medium">Simpan Profil</button>
+                </div>
+
+                <div id="tab-katalog" class="tab-content">
+                    <h3 class="text-lg font-bold mb-4 text-white">Manajemen Katalog</h3>
+                    <div class="bg-slate-800/50 p-4 rounded-xl border border-slate-700 mb-6">
+                        <h4 class="text-sm font-bold text-pink-300 mb-3">Tambah Produk Baru</h4>
+                        <div class="grid grid-cols-2 gap-3 mb-3">
+                            <input type="text" id="add-cat-name" placeholder="Nama Produk" class="bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm col-span-2 focus:outline-none focus:border-pink-500 text-white">
+                            <input type="text" id="add-cat-badge" placeholder="Badge (PRO, TEAM, dll)" class="bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-pink-500 text-white">
+                            <input type="text" id="add-cat-price" placeholder="Harga (Rp ...)" class="bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-pink-500 text-white">
+                            <input type="text" id="add-cat-img" placeholder="URL Gambar Produk" class="bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm col-span-2 focus:outline-none focus:border-pink-500 text-white">
+                            <input type="text" id="add-cat-desc" placeholder="Deskripsi Singkat" class="bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm col-span-2 focus:outline-none focus:border-pink-500 text-white">
+                        </div>
+                        <button onclick="addCatalog()" class="bg-emerald-600 hover:bg-emerald-500 text-white px-5 py-2.5 rounded-lg text-sm transition font-medium">Tambah Produk</button>
+                    </div>
+                    <div id="admin-catalog-list" class="space-y-3"></div>
+                </div>
+
+                <div id="tab-testimoni" class="tab-content">
+                    <h3 class="text-lg font-bold mb-4 text-white">Riwayat Testimoni Transaksi</h3>
+                    <div class="bg-slate-800/50 p-4 rounded-xl border border-slate-700 mb-6">
+                        <h4 class="text-sm font-bold text-emerald-300 mb-3">Tambah Testimoni</h4>
+                        <input type="text" id="add-testi-name" placeholder="Nama Pembeli" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm mb-2 focus:outline-none focus:border-emerald-500 text-white">
+                        <input type="text" id="add-testi-item" placeholder="Item yang dibeli" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm mb-2 focus:outline-none focus:border-emerald-500 text-white">
+                        <input type="text" id="add-testi-desc" placeholder="Komentar Pembeli" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm mb-3 focus:outline-none focus:border-emerald-500 text-white">
+                        <button onclick="addTestimoni()" class="bg-emerald-600 hover:bg-emerald-500 text-white px-5 py-2.5 rounded-lg text-sm transition font-medium">Posting Testimoni</button>
+                    </div>
+                    <div id="admin-testi-list" class="space-y-2"></div>
+                </div>
+
+                <div id="tab-blacklist" class="tab-content">
+                    <h3 class="text-lg font-bold mb-4 text-white">Daftar Akun Bermasalah</h3>
+                    <div class="bg-slate-800/50 p-4 rounded-xl border border-red-900/30 mb-6">
+                        <h4 class="text-sm font-bold text-red-400 mb-3">Tambah ke Blacklist</h4>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
+                            <input type="text" id="add-bl-id" placeholder="Tagar akun/ID" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-red-500 col-span-1 sm:col-span-2 text-white">
+                            <input type="text" id="add-bl-game" placeholder="Game" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-red-500 text-white">
+                            <input type="text" id="add-bl-phone" placeholder="No pencarian" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-red-500 text-white">
+                            <input type="text" id="add-bl-payment" placeholder="Payment" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-red-500 text-white">
+                            <input type="text" id="add-bl-reason" placeholder="Keterangan" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-red-500 col-span-1 sm:col-span-2 text-white">
+                        </div>
+                        <button onclick="addBlacklist()" class="bg-red-600 hover:bg-red-500 text-white px-5 py-2.5 rounded-lg text-sm font-medium transition shadow-lg shadow-red-900/40">Blacklist Akun</button>
+                    </div>
+                    <div id="admin-bl-list" class="space-y-3"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= JAVASCRIPT & DATABASE GITHUB ================= -->
+    <script>
+        // --- 1. KONFIGURASI GITHUB GIST (Ubah Bagian Ini!) ---
+        const GITHUB_TOKEN = "ghp_" + "TLVp1cH5YdEm8s77mYQ8oN5ZSKMZu34gBKBJ"; 
+        const GIST_ID = "47f43a4014b1b587506e0e12df2dd89d"; 
+
+        const defaultDB = {
+            profile: {
+                name: "Rifqy Sahda Pratama",
+                role: "Production Staff / Digital Creator",
+                location: "Indonesia • Ready to collaborate",
+                photo: "https://placehold.co/150x150/ec4899/ffffff?text=RSP",
+                bio: "Halo! Saya <strong class='text-white'>Rifqy Sahda Pratama</strong>, seorang profesional di bidang produksi dan kreator digital. Selamat datang di katalog resmi saya!"
+            },
+            catalog: [
+                { id: 1, name: "CapCut Pro Akun Resmi", badge: "PRO", price: "Rp 25.000", img: "https://placehold.co/400x250/ec4899/ffffff?text=CapCut+Pro", desc: "Akun premium unblock semua efek pro, bebas watermark." },
+                { id: 2, name: "Canva Pro Team", badge: "TEAM", price: "Rp 15.000", img: "https://placehold.co/400x250/8b5cf6/ffffff?text=Canva+Pro", desc: "Akses fitur premium Canva, jutaan template." }
+            ],
+            testimonials: [
+                { id: 1, user: "Budi Setiawan", item: "Netflix Premium 4K", text: "Proses cepat banget, admin responsif. Mantap!" }
+            ],
+            blacklist: [
+                { id: "#061204", game: "Clash of clan", phone: "081234567890", payment: "DANA", reason: "Hb Akun" }
+            ]
+        };
+
+        let db = null;
+
+        // --- 2. KONEKSI API GITHUB GIST ---
+        async function fetchDB() {
+            try {
+                const response = await fetch(`https://api.github.com/gists/${GIST_ID}`);
+                const data = await response.json();
+                
+                if (data.files['db.json'] && data.files['db.json'].content !== "{}") {
+                    db = JSON.parse(data.files['db.json'].content);
+                } else {
+                    db = JSON.parse(JSON.stringify(defaultDB));
+                    await saveDB(); 
+                }
+                renderUserView();
+            } catch (error) {
+                console.error("Gagal load dari GitHub, menggunakan data sementara.", error);
+                db = JSON.parse(JSON.stringify(defaultDB));
+                renderUserView();
+            }
+        }
+
+        async function saveDB() {
+            try {
+                await fetch(`https://api.github.com/gists/${GIST_ID}`, {
+                    method: 'PATCH',
+                    headers: {
+                        'Accept': 'application/vnd.github.v3+json',
+                        'Authorization': `Bearer ${GITHUB_TOKEN}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        files: {
+                            'db.json': {
+                                content: JSON.stringify(db, null, 2)
+                            }
+                        }
+                    })
+                });
+            } catch (error) {
+                console.error("Gagal menyinkronkan dengan GitHub:", error);
+                alert("Terjadi kesalahan jaringan. Data gagal disimpan ke server.");
+            }
+        }
+
+        async function resetData() { 
+            if(confirm('Yakin ingin mereset ke data awal? Semua perubahan di server publik akan hilang.')){
+                db = JSON.parse(JSON.stringify(defaultDB)); 
+                await saveDB(); 
+                location.reload();
+            }
+        }
+
+        // --- 3. RENDER PADA HALAMAN USER ---
+        function renderUserView() {
+            if (!db) return;
+
+            document.getElementById('view-name').textContent = db.profile.name;
+            document.getElementById('view-role').textContent = db.profile.role;
+            document.getElementById('view-loc-text').textContent = db.profile.location;
+            document.getElementById('view-bio').innerHTML = db.profile.bio;
+            document.getElementById('view-photo').src = db.profile.photo;
+
+            const catContainer = document.getElementById('view-catalog');
+            catContainer.innerHTML = '';
+            db.catalog.forEach(item => {
+                catContainer.innerHTML += `
+                    <div class="glass-card rounded-2xl p-5 flex flex-col justify-between group">
+                        <div>
+                            <div class="overflow-hidden rounded-xl mb-4 h-40 bg-slate-900/50 relative border border-white/5">
+                                <img src="${item.img}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                                <span class="absolute top-2 right-2 bg-pink-600 text-[10px] font-bold px-2 py-1 rounded shadow">${item.badge}</span>
+                            </div>
+                            <h3 class="text-lg font-bold text-white mb-1">${item.name}</h3>
+                            <p class="text-slate-300 text-xs mb-4">${item.desc}</p>
+                        </div>
+                        <div class="flex items-center justify-between mt-auto pt-2">
+                            <span class="font-bold text-pink-300">${item.price}</span>
+                            <button onclick="openQris('${item.name}', '${item.price}')" class="bg-pink-600 hover:bg-pink-500 text-white text-xs px-3 py-1.5 rounded-lg shadow-lg shadow-pink-900/40 transition">ORDER</button>
+                        </div>
+                    </div>
+                `;
+            });
+
+            const testContainer = document.getElementById('view-testimonials');
+            testContainer.innerHTML = '';
+            db.testimonials.forEach(t => {
+                testContainer.innerHTML += `
+                    <div class="glass-card p-4 rounded-2xl border-l-4 border-l-emerald-500 relative overflow-hidden">
+                        <div class="absolute -right-4 -bottom-4 text-emerald-900/30 text-5xl"><i class="fa-solid fa-quote-right"></i></div>
+                        <div class="flex items-center gap-2 mb-2 relative z-10">
+                            <div class="w-8 h-8 rounded-full bg-emerald-900/50 flex items-center justify-center text-emerald-400"><i class="fa-solid fa-user text-xs"></i></div>
+                            <div><p class="text-sm font-bold text-white">${t.user}</p><p class="text-[10px] text-emerald-400 font-medium">${t.item}</p></div>
+                        </div>
+                        <p class="text-xs text-slate-300 relative z-10 italic">"${t.text}"</p>
+                    </div>
+                `;
+            });
+            
+            triggerScrollAnim();
+        }
+
+        // --- 4. FUNGSI PENCARIAN BLACKLIST ---
+        function searchBlacklist() {
+            if(!db) return;
+            const query = document.getElementById('searchInput').value.trim();
+            const resDiv = document.getElementById('searchResult');
+            
+            if(!query) { resDiv.style.display = 'none'; return; }
+            
+            const found = db.blacklist.find(b => b.id.toLowerCase() === query.toLowerCase());
+            resDiv.style.display = 'block';
+            
+            if (found) {
+                resDiv.className = 'mt-4 p-5 rounded-2xl bg-[#2A1115]/90 border border-red-900 text-slate-200 shadow-xl backdrop-blur-md relative z-10';
+                resDiv.innerHTML = `
+                    <div class="font-bold text-base mb-4 text-red-400 border-b border-red-900/50 pb-4 flex items-start gap-2">
+                        <div class="mt-1"><i class="fa-solid fa-circle-xmark bg-red-400 text-[#2A1115] rounded-full p-0.5 text-sm"></i></div>
+                        <div>AWAS! ID/No HP<br>"${found.id}" terdaftar di blacklist.</div>
+                    </div>
+                    <div class="space-y-4 text-[13px] sm:text-sm tracking-wide">
+                        <div class="flex items-start"><span class="w-[40%] sm:w-[35%] text-slate-300">Tagar akun/ID</span> <span class="w-[60%] sm:w-[65%] text-white flex gap-2"><span>:</span> <span class="break-all font-medium">${found.id}</span></span></div>
+                        <div class="flex items-start"><span class="w-[40%] sm:w-[35%] text-slate-300">Game</span> <span class="w-[60%] sm:w-[65%] text-white flex gap-2"><span>:</span> <span class="break-words font-medium">${found.game}</span></span></div>
+                        <div class="flex items-start"><span class="w-[40%] sm:w-[35%] text-slate-300">No pencarian</span> <span class="w-[60%] sm:w-[65%] text-white flex gap-2"><span>:</span> <span class="break-all font-medium">${found.phone}</span></span></div>
+                        <div class="flex items-start"><span class="w-[40%] sm:w-[35%] text-slate-300">Payment</span> <span class="w-[60%] sm:w-[65%] text-white flex gap-2"><span>:</span> <span class="break-words font-medium">${found.payment}</span></span></div>
+                        <div class="flex items-start"><span class="w-[40%] sm:w-[35%] text-slate-300">Keterangan</span> <span class="w-[60%] sm:w-[65%] text-white flex gap-2"><span>:</span> <span class="break-words font-medium">${found.reason}</span></span></div>
+                    </div>
+                `;
+            } else {
+                resDiv.className = 'mt-4 text-sm p-4 rounded-xl bg-emerald-950/80 border border-emerald-500/50 text-emerald-100 shadow-[0_0_15px_rgba(16,185,129,0.1)] backdrop-blur-md relative z-10';
+                resDiv.innerHTML = `<i class="fa-solid fa-shield-check mr-1 text-emerald-400"></i> ID / Tagar <strong>"${query}"</strong> tidak ditemukan. Status Aman.`;
+            }
+        }
+
+        let selProd = "", selPrice = "";
+        function openQris(name, price) { selProd = name; selPrice = price; document.getElementById('modalItemName').textContent = name; document.getElementById('modalItemPrice').textContent = price; document.getElementById('qrisModal').classList.remove('hidden'); }
+        function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
+        function confirmPayment() { window.open(`https://wa.me/6285199706975?text=Halo%20kak,%20saya%20mau%20order%20${selProd}%20harga%20${selPrice}%20via%20QRIS`, '_blank'); }
+
+        // --- 5. PANEL ADMIN ---
+        function openAdminLogin() { document.getElementById('loginModal').classList.remove('hidden'); }
+        
+        function loginAdmin() {
+            if(document.getElementById('adminPassword').value === '061204') {
+                closeModal('loginModal');
+                document.getElementById('adminPanel').classList.remove('hidden');
+                document.getElementById('adminPassword').value = '';
+                loadAdminData();
+            } else { alert('Password Salah!'); }
+        }
+        function closeAdminPanel() { document.getElementById('adminPanel').classList.add('hidden'); renderUserView(); }
+
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        function loadAdminData() {
+            if(!db) return;
+            document.getElementById('edit-name').value = db.profile.name;
+            document.getElementById('edit-role').value = db.profile.role;
+            document.getElementById('edit-loc').value = db.profile.location;
+            document.getElementById('edit-photo').value = db.profile.photo;
+            document.getElementById('edit-bio').value = db.profile.bio;
+
+            const catList = document.getElementById('admin-catalog-list');
+            catList.innerHTML = '';
+            db.catalog.forEach((item, index) => {
+                catList.innerHTML += `<div class="bg-slate-800 border border-slate-700 p-3 rounded-lg flex justify-between items-center text-sm"><div class="text-white"><strong>${item.name}</strong></div><button onclick="delCatalog(${index})" class="text-slate-400 hover:text-red-400 transition"><i class="fa-solid fa-trash"></i></button></div>`;
+            });
+
+            const tesList = document.getElementById('admin-testi-list');
+            tesList.innerHTML = '';
+            db.testimonials.forEach((item, index) => {
+                tesList.innerHTML += `<div class="bg-slate-800 border border-slate-700 p-3 rounded-lg flex justify-between items-center text-xs"><span class="text-white"><strong>${item.user}</strong>: ${item.text}</span><button onclick="delTesti(${index})" class="text-slate-400 hover:text-red-400"><i class="fa-solid fa-trash"></i></button></div>`;
+            });
+
+            const blList = document.getElementById('admin-bl-list');
+            blList.innerHTML = '';
+            db.blacklist.forEach((item, index) => {
+                blList.innerHTML += `<div class="bg-red-950/30 border border-red-900/50 p-3 rounded-xl flex justify-between items-center text-xs relative group"><div class="flex flex-col gap-1 w-full"><div class="font-bold text-white text-sm">${item.id}</div><div class="text-slate-400">${item.game} | ${item.reason}</div></div><button onclick="delBL(${index})" class="text-slate-500 hover:text-red-400 p-2 ml-2 transition"><i class="fa-solid fa-trash text-base"></i></button></div>`;
+            });
+        }
+
+        // --- ADMIN ASYNC ACTIONS ---
+        async function saveProfile() {
+            db.profile.name = document.getElementById('edit-name').value;
+            db.profile.role = document.getElementById('edit-role').value;
+            db.profile.location = document.getElementById('edit-loc').value;
+            db.profile.photo = document.getElementById('edit-photo').value;
+            db.profile.bio = document.getElementById('edit-bio').value;
+            const btn = event.target; btn.innerText = "Menyimpan...";
+            await saveDB(); 
+            btn.innerText = "Simpan Profil";
+            alert('Profil global berhasil diperbarui!');
+        }
+
+        async function addCatalog() {
+            db.catalog.push({
+                id: Date.now(),
+                name: document.getElementById('add-cat-name').value,
+                badge: document.getElementById('add-cat-badge').value,
+                price: document.getElementById('add-cat-price').value,
+                img: document.getElementById('add-cat-img').value,
+                desc: document.getElementById('add-cat-desc').value
+            });
+            const btn = event.target; btn.innerText = "Menyimpan...";
+            await saveDB(); loadAdminData();
+            btn.innerText = "Tambah Produk";
+            document.querySelectorAll('#tab-katalog input').forEach(inpt => inpt.value = '');
+        }
+        async function delCatalog(idx) { db.catalog.splice(idx, 1); await saveDB(); loadAdminData(); }
+
+        async function addTestimoni() {
+            db.testimonials.push({
+                id: Date.now(),
+                user: document.getElementById('add-testi-name').value,
+                item: document.getElementById('add-testi-item').value,
+                text: document.getElementById('add-testi-desc').value
+            });
+            const btn = event.target; btn.innerText = "Menyimpan...";
+            await saveDB(); loadAdminData();
+            btn.innerText = "Posting Testimoni";
+            document.querySelectorAll('#tab-testimoni input').forEach(inpt => inpt.value = '');
+        }
+        async function delTesti(idx) { db.testimonials.splice(idx, 1); await saveDB(); loadAdminData(); }
+
+        async function addBlacklist() {
+            const idInput = document.getElementById('add-bl-id').value.trim();
+            if(!idInput) { alert("Tagar akun/ID wajib diisi!"); return; }
+
+            db.blacklist.push({
+                id: idInput,
+                game: document.getElementById('add-bl-game').value || "-",
+                phone: document.getElementById('add-bl-phone').value || "-",
+                payment: document.getElementById('add-bl-payment').value || "-",
+                reason: document.getElementById('add-bl-reason').value || "-"
+            });
+            
+            const btn = event.target; btn.innerText = "Menyimpan...";
+            await saveDB(); loadAdminData();
+            btn.innerText = "Blacklist Akun";
+            document.querySelectorAll('#tab-blacklist input').forEach(inpt => inpt.value = '');
+        }
+        async function delBL(idx) { db.blacklist.splice(idx, 1); await saveDB(); loadAdminData(); }
+
+        // --- INISIALISASI ---
+        fetchDB(); 
+
+        setInterval(() => {
+            const now = new Date();
+            document.getElementById('realtime-clock').textContent = new Intl.DateTimeFormat('id-ID', { timeZone: 'Asia/Jakarta', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false }).format(now).replace(/\./g, ':');
+        }, 1000);
+
+        function triggerScrollAnim() {
+            const observer = new IntersectionObserver(entries => { entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('show'); }); }, { threshold: 0.1 });
+            document.querySelectorAll('.scroll-popup').forEach(el => observer.observe(el));
+        }
+    </script>
+</body>
+</html>
